@@ -12,10 +12,12 @@ import {
   getStats,
   getFeaturedProjects,
   getLatestBlogPosts,
+  getSkills,
   HeroData,
   Stat,
   Project,
   BlogPost,
+  Skill,
 } from '../lib/api'
 
 export default function Home() {
@@ -23,6 +25,7 @@ export default function Home() {
   const [stats, setStats] = useState<Stat[]>([])
   const [projects, setProjects] = useState<Project[]>([])
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [skills, setSkills] = useState<Skill[]>([])
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const { t, language } = useLanguage()
@@ -31,16 +34,18 @@ export default function Home() {
     setMounted(true)
     const fetchData = async () => {
       try {
-        const [heroData, statsData, projectsData, blogData] = await Promise.all([
+        const [heroData, statsData, projectsData, blogData, skillsData] = await Promise.all([
           getHero(language),
           getStats(),
           getFeaturedProjects(),
           getLatestBlogPosts(),
+          getSkills(),
         ])
         setHero(heroData)
         setStats(statsData)
         setProjects(projectsData)
         setBlogPosts(blogData)
+        setSkills(skillsData)
       } catch (error) {
         console.error('Failed to fetch data:', error)
       } finally {
@@ -278,9 +283,9 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {['React', 'Next.js', 'TypeScript', 'Node.js', 'Python', 'Go', 'Docker', 'AWS', 'PostgreSQL', 'MongoDB', 'Redis', 'Git'].map((tech, index) => (
+            {skills.map((skill, index) => (
               <motion.div
-                key={tech}
+                key={skill.id}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
@@ -288,7 +293,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05, y: -4 }}
                 className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow-md hover:shadow-lg transition-shadow"
               >
-                <span className="font-semibold text-gray-800 dark:text-gray-200">{tech}</span>
+                <span className="font-semibold text-gray-800 dark:text-gray-200">{skill.name}</span>
               </motion.div>
             ))}
           </div>
