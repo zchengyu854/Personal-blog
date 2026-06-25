@@ -196,6 +196,26 @@ async def create_achievement(
     return success_response(data=ExperienceResponse.model_validate(db_exp).model_dump(), message="创建成功")
 
 
+@router.put("/achievements/{ach_id}")
+async def update_achievement(
+    ach_id: int,
+    exp_update: ExperienceUpdate,
+    db: Session = Depends(get_db),
+    credentials: dict = Depends(verify_token)
+):
+    db_exp = db.query(Experience).filter(Experience.id == ach_id).first()
+    if not db_exp:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="成就不存在")
+    
+    update_data = exp_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_exp, key, value)
+    
+    db.commit()
+    db.refresh(db_exp)
+    return success_response(data=ExperienceResponse.model_validate(db_exp).model_dump(), message="更新成功")
+
+
 @router.delete("/achievements/{ach_id}")
 async def delete_achievement(
     ach_id: int,
