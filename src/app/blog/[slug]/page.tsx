@@ -95,18 +95,20 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-gray-300 hover:text-white mb-6 transition-colors group"
-            >
-              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-              {t('blog.backToList')}
-            </Link>
-            
-            <span className="inline-flex items-center gap-1 px-4 py-1.5 text-sm font-medium bg-white/10 backdrop-blur-sm text-white rounded-full mb-5 border border-white/20">
-              <Tag size={14} />
-              {post.category}
-            </span>
+            <div className="flex items-start justify-between mb-6">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors group"
+              >
+                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                {t('blog.backToList')}
+              </Link>
+              
+              <span className="inline-flex items-center gap-1 px-4 py-1.5 text-sm font-medium bg-white/10 backdrop-blur-sm text-white rounded-full border border-white/20">
+                <Tag size={14} />
+                {post.category}
+              </span>
+            </div>
             
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               {post.title}
@@ -147,22 +149,132 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
               <div className="p-8 md:p-12 lg:p-16">
-                <div className="flex flex-wrap gap-2 mb-10 pb-8 border-b border-gray-100 dark:border-gray-700">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium bg-gradient-to-r from-primary/10 to-secondary/10 text-primary rounded-full border border-primary/20 hover:border-primary/40 transition-colors"
-                    >
-                      <Tag size={13} />
-                      {tag}
-                    </span>
-                  ))}
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-10 pb-8 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    {t('blog.tag')}
+                  </span>
+                  <div className="flex flex-wrap gap-2 justify-end">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium bg-gradient-to-r from-primary/10 to-secondary/10 text-primary rounded-full border border-primary/20 hover:border-primary/40 transition-colors"
+                      >
+                        <Tag size={13} />
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 dark:prose-strong:text-white prose-code:bg-gray-100 dark:prose-code:bg-gray-700 prose-code:px-2 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-primary prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-xl prose-pre:p-6 prose-pre:shadow-lg prose-pre:overflow-x-auto prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:py-4 prose-blockquote:pr-6 prose-blockquote:rounded-r-lg prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300 prose-img:rounded-xl prose-img:shadow-md prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-li:my-2">
+                <div className="markdown-body prose prose-lg max-w-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
+                    components={{
+                      h1: ({ children }) => (
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-10 mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+                          {children}
+                        </h1>
+                      ),
+                      h2: ({ children }) => (
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4 flex items-center gap-3">
+                          <span className="w-1 h-7 bg-gradient-to-b from-primary to-secondary rounded-full" />
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-6 mb-3">
+                          {children}
+                        </h3>
+                      ),
+                      h4: ({ children }) => (
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mt-5 mb-2">
+                          {children}
+                        </h4>
+                      ),
+                      p: ({ children }) => (
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed my-4 text-base">
+                          {children}
+                        </p>
+                      ),
+                      a: ({ href, children }) => (
+                        <a href={href} className="text-primary hover:underline font-medium" target="_blank" rel="noopener noreferrer">
+                          {children}
+                        </a>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="font-bold text-gray-900 dark:text-white">
+                          {children}
+                        </strong>
+                      ),
+                      ul: ({ children }) => (
+                        <ul className="list-disc pl-6 my-4 space-y-2 text-gray-700 dark:text-gray-300">
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="list-decimal pl-6 my-4 space-y-2 text-gray-700 dark:text-gray-300">
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="leading-relaxed">
+                          {children}
+                        </li>
+                      ),
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-primary bg-primary/5 py-4 px-6 my-6 rounded-r-lg text-gray-700 dark:text-gray-300 italic">
+                          {children}
+                        </blockquote>
+                      ),
+                      code: ({ className, children }) => {
+                        const isBlock = className?.includes('language-')
+                        if (isBlock) {
+                          return (
+                            <pre className="bg-gray-900 text-gray-100 rounded-xl p-5 my-6 overflow-x-auto shadow-lg">
+                              <code className="text-sm">{children}</code>
+                            </pre>
+                          )
+                        }
+                        return (
+                          <code className="bg-gray-100 dark:bg-gray-700 text-primary px-2 py-0.5 rounded text-sm font-mono">
+                            {children}
+                          </code>
+                        )
+                      },
+                      pre: ({ children }) => (
+                        <pre className="bg-gray-900 text-gray-100 rounded-xl p-5 my-6 overflow-x-auto shadow-lg">
+                          {children}
+                        </pre>
+                      ),
+                      img: ({ src, alt }) => (
+                        <img
+                          src={src}
+                          alt={alt || ''}
+                          className="rounded-xl shadow-md my-6 max-w-full h-auto"
+                        />
+                      ),
+                      hr: () => (
+                        <hr className="my-8 border-gray-200 dark:border-gray-700" />
+                      ),
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto my-6">
+                          <table className="min-w-full border-collapse border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                            {children}
+                          </table>
+                        </div>
+                      ),
+                      th: ({ children }) => (
+                        <th className="bg-gray-100 dark:bg-gray-700 px-4 py-3 text-left font-bold text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600">
+                          {children}
+                        </th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="px-4 py-3 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                          {children}
+                        </td>
+                      ),
+                    }}
                   >
                     {post.content}
                   </ReactMarkdown>
