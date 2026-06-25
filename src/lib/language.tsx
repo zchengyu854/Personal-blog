@@ -96,6 +96,13 @@ const translations: Record<string, Record<Language, string>> = {
   'blog.noResults': { zh: '没有找到匹配的文章', en: 'No matching articles found' },
   'blog.readTime': { zh: '分钟阅读', en: 'min read' },
   'blog.backToList': { zh: '返回列表', en: 'Back to list' },
+  'blog.views': { zh: '次阅读', en: 'views' },
+  'blog.minRead': { zh: '分钟阅读', en: 'min read' },
+  'blog.notFound': { zh: '文章不存在', en: 'Article not found' },
+  'blog.related': { zh: '相关文章', en: 'Related Posts' },
+  'blog.morePosts': { zh: '探索更多精彩内容', en: 'Explore more great content' },
+  'blog.viewAll': { zh: '查看所有文章', en: 'View All Articles' },
+  'blog.share': { zh: '分享', en: 'Share' },
 
   // Contact page
   'contact.title': { zh: '联系我', en: 'Contact' },
