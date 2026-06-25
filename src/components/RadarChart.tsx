@@ -76,8 +76,8 @@ export default function RadarChart({ data }: RadarChartProps) {
               const labelRadius = 115
               const x = 130 + labelRadius * Math.cos(angle)
               const y = 130 + labelRadius * Math.sin(angle)
-              let textAnchor = 'middle'
-              let dominantBaseline = 'middle'
+              let textAnchor: 'middle' | 'end' | 'start' = 'middle'
+              let dominantBaseline: 'middle' | 'hanging' | 'baseline' = 'middle'
               if (x < 130 - 20) textAnchor = 'end'
               if (x > 130 + 20) textAnchor = 'start'
               if (y < 130 - 20) dominantBaseline = 'hanging'
