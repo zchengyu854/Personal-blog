@@ -11,9 +11,11 @@ import {
   getExperiences,
   getEducation,
   getAchievements,
+  getStats,
   AboutProfile,
   Experience,
   Achievement,
+  Stat,
 } from '../../lib/api'
 
 export default function About() {
@@ -21,6 +23,7 @@ export default function About() {
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [education, setEducation] = useState<Experience[]>([])
   const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [stats, setStats] = useState<Stat[]>([])
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const { t } = useLanguage()
@@ -29,16 +32,18 @@ export default function About() {
     setMounted(true)
     const fetchData = async () => {
       try {
-        const [profileData, expData, eduData, achData] = await Promise.all([
+        const [profileData, expData, eduData, achData, statsData] = await Promise.all([
           getAboutProfile(),
           getExperiences(),
           getEducation(),
           getAchievements(),
+          getStats(),
         ])
         setProfile(profileData)
         setExperiences(expData)
         setEducation(eduData)
         setAchievements(achData)
+        setStats(statsData)
       } catch (error) {
         console.error('Failed to fetch data:', error)
       } finally {
@@ -105,8 +110,8 @@ export default function About() {
                   </div>
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
-                  <div className="text-3xl font-bold text-gradient">5+</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{t('about.yearsExperience')}</div>
+                  <div className="text-3xl font-bold text-gradient">{stats[0]?.value || '5+'}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{stats[0]?.label || t('about.yearsExperience')}</div>
                 </div>
               </div>
             </motion.div>
