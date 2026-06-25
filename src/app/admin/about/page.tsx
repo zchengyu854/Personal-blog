@@ -64,6 +64,16 @@ export default function AboutPage() {
     }
   };
 
+  const getApiPath = (type: ExperienceType, action: 'create' | 'update', id?: number) => {
+    if (type === 'work') {
+      return action === 'create' ? '/api/about/experiences' : `/api/about/experiences/${id}`;
+    } else if (type === 'education') {
+      return action === 'create' ? '/api/about/education' : `/api/about/education/${id}`;
+    } else {
+      return action === 'create' ? '/api/about/achievements' : `/api/about/achievements/${id}`;
+    }
+  };
+
   const handleExperienceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingExperience) return;
@@ -85,7 +95,7 @@ export default function AboutPage() {
     try {
       if (editingExperience.id) {
         await apiRequest<Experience>(
-          `/api/about/${experienceType}s/${editingExperience.id}`,
+          getApiPath(experienceType, 'update', editingExperience.id),
           'PUT',
           data,
           true
@@ -93,7 +103,7 @@ export default function AboutPage() {
         setMessage('更新成功！');
       } else {
         await apiRequest<Experience>(
-          `/api/about/${experienceType}s`,
+          getApiPath(experienceType, 'create'),
           'POST',
           data,
           true
@@ -112,7 +122,7 @@ export default function AboutPage() {
     if (!confirm('确定要删除吗？')) return;
 
     try {
-      await apiRequest<{}>(`/api/about/${type}s/${id}`, 'DELETE');
+      await apiRequest<{}>(getApiPath(type, 'update', id), 'DELETE');
       if (type === 'work') {
         setExperiences(experiences.filter(e => e.id !== id));
       } else if (type === 'education') {
