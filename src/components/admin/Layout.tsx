@@ -11,7 +11,8 @@ import {
   BarChart3, 
   LogOut,
   Menu,
-  X
+  X,
+  User
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -21,6 +22,7 @@ interface AdminLayoutProps {
 const menuItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
   { label: 'Hero区域', icon: Settings, href: '/admin/hero' },
+  { label: '关于我', icon: User, href: '/admin/about' },
   { label: '技能管理', icon: Code, href: '/admin/skills' },
   { label: '项目管理', icon: FolderOpen, href: '/admin/projects' },
   { label: '博客管理', icon: FileText, href: '/admin/blog' },
