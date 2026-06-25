@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, Tag, Search, BookOpen } from 'lucide-react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
+import Link from 'next/link'
 import { useLanguage } from '../../lib/language'
 import { getBlogPosts, BlogPost } from '../../lib/api'
 
@@ -13,7 +14,6 @@ export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const { t } = useLanguage()
@@ -138,16 +138,19 @@ export default function Blog() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post, index) => (
-              <motion.div
+              <Link
+                href={`/blog/${post.slug}`}
                 key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -4 }}
-                onClick={() => setSelectedPost(post)}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                className="block"
               >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ y: -4 }}
+                  className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+                >
                 <span className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full mb-3">
                   <Tag size={12} />
                   {post.category}
@@ -161,7 +164,8 @@ export default function Blog() {
                   </span>
                   <span>{post.read_time}{t('blog.readTime')}</span>
                 </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             ))}
           </div>
 
@@ -173,74 +177,6 @@ export default function Blog() {
           )}
         </div>
       </section>
-
-      <AnimatePresence>
-        {selectedPost && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
-            onClick={() => setSelectedPost(null)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl max-w-3xl w-full m-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-8">
-                <button
-                  onClick={() => setSelectedPost(null)}
-                  className="mb-6 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                >
-                  ← {t('blog.backToList')}
-                </button>
-                <span className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full mb-4">
-                  <Tag size={14} />
-                  {selectedPost.category}
-                </span>
-                <h1 className="text-2xl md:text-3xl font-bold mb-4">{selectedPost.title}</h1>
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    {selectedPost.created_at?.split('T')[0] || ''}
-                  </span>
-                  <span>{selectedPost.read_time}{t('blog.readTime')}</span>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {selectedPost.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <article className="prose prose-lg dark:prose-invert max-w-none">
-                  {selectedPost.content.split('\n').map((line, index) => {
-                    if (line.startsWith('# ')) {
-                      return <h1 key={index} className="text-2xl font-bold mb-4 mt-6">{line.slice(2)}</h1>
-                    }
-                    if (line.startsWith('## ')) {
-                      return <h2 key={index} className="text-xl font-bold mb-3 mt-5">{line.slice(3)}</h2>
-                    }
-                    if (line.startsWith('```')) {
-                      return <div key={index} className="my-4"><pre className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto"><code>{selectedPost.content.split('```')[1]}</code></pre></div>
-                    }
-                    if (line.startsWith('- ')) {
-                      return <li key={index} className="ml-4">{line.slice(2)}</li>
-                    }
-                    return <p key={index} className="mb-4">{line}</p>
-                  })}
-                </article>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <Footer />
     </div>

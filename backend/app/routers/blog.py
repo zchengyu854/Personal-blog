@@ -79,6 +79,16 @@ async def get_post(post_id: int, db: Session = Depends(get_db)):
     return success_response(data=BlogPostResponse.model_validate(post).model_dump())
 
 
+@router.get("/posts/slug/{slug}")
+async def get_post_by_slug(slug: str, db: Session = Depends(get_db)):
+    post = db.query(BlogPost).filter(BlogPost.slug == slug).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
+    post.view_count += 1
+    db.commit()
+    return success_response(data=BlogPostResponse.model_validate(post).model_dump())
+
+
 @router.post("/posts")
 async def create_post(
     post: BlogPostCreate,
