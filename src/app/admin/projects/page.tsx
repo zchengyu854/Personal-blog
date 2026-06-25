@@ -13,6 +13,7 @@ export default function ProjectsPage() {
   const [showForm, setShowForm] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -54,6 +55,9 @@ export default function ProjectsPage() {
       formData.append('long_description', editingProject.long_description);
     }
     formData.append('category', editingProject.category);
+    if (imageUrl) {
+      formData.append('image_url', imageUrl);
+    }
     if (editingProject.github_url) {
       formData.append('github_url', editingProject.github_url);
     }
@@ -135,6 +139,9 @@ export default function ProjectsPage() {
       created_at: '',
       updated_at: '',
     });
+    setSelectedImage(null);
+    setImagePreview(null);
+    setImageUrl('');
     setShowForm(true);
   };
 
@@ -142,6 +149,7 @@ export default function ProjectsPage() {
     setEditingProject({ ...project });
     setSelectedImage(null);
     setImagePreview(project.image_url || null);
+    setImageUrl(project.image_url || '');
     setShowForm(true);
   };
 
@@ -336,15 +344,26 @@ export default function ProjectsPage() {
                       )}
                     </label>
                   </div>
+                  {imageUrl && !selectedImage && (
+                    <p className="text-xs text-gray-500 mt-2">当前使用图片链接: {imageUrl}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">GitHub链接</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">封面图片链接</label>
                   <input
                     type="url"
-                    value={editingProject?.github_url || ''}
-                    onChange={(e) => setEditingProject({ ...editingProject!, github_url: e.target.value })}
+                    value={imageUrl}
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      if (e.target.value) {
+                        setImagePreview(e.target.value);
+                        setSelectedImage(null);
+                      }
+                    }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://example.com/image.jpg"
                   />
+                  <p className="text-xs text-gray-500 mt-1">可选：输入图片URL或上传本地图片</p>
                 </div>
               </div>
               <div>

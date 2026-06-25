@@ -106,6 +106,7 @@ async def create_project(
     description: str = Form(...),
     long_description: Optional[str] = Form(None),
     category: str = Form(...),
+    image_url: Optional[str] = Form(None),
     github_url: Optional[str] = Form(None),
     demo_url: Optional[str] = Form(None),
     tags: Optional[str] = Form(None),
@@ -126,6 +127,7 @@ async def create_project(
         description=description,
         long_description=long_description,
         category=category,
+        image_url=image_url,
         github_url=github_url,
         demo_url=demo_url,
         tags=tags_list,
@@ -136,6 +138,7 @@ async def create_project(
     if image:
         db_project.image_data = await image.read()
         db_project.image_mime_type = image.content_type
+        db_project.image_url = None
     
     db.add(db_project)
     db.commit()
@@ -153,6 +156,7 @@ async def update_project(
     description: Optional[str] = Form(None),
     long_description: Optional[str] = Form(None),
     category: Optional[str] = Form(None),
+    image_url: Optional[str] = Form(None),
     github_url: Optional[str] = Form(None),
     demo_url: Optional[str] = Form(None),
     tags: Optional[str] = Form(None),
@@ -175,6 +179,8 @@ async def update_project(
         db_project.long_description = long_description
     if category is not None:
         db_project.category = category
+    if image_url is not None:
+        db_project.image_url = image_url
     if github_url is not None:
         db_project.github_url = github_url
     if demo_url is not None:
@@ -192,6 +198,7 @@ async def update_project(
     if image:
         db_project.image_data = await image.read()
         db_project.image_mime_type = image.content_type
+        db_project.image_url = None
     
     db.commit()
     db.refresh(db_project)
